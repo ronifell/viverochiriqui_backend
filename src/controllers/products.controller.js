@@ -26,6 +26,21 @@ const partialProductSchema = productSchema.partial();
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+/** Normalize legacy absolute upload URLs to `/uploads/...` paths. */
+const normalizeUploadUrl = (url) => {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('/uploads/')) return url;
+  const idx = url.indexOf('/uploads/');
+  if (idx !== -1) return url.slice(idx);
+  return url;
+};
+
+const normalizeImages = (images) =>
+  (images || []).map((img) => ({
+    ...img,
+    url: normalizeUploadUrl(img.url),
+  }));
+
 /**
  * Builds the public product DTO. Hides wholesale_price unless caller is wholesale or admin.
  */
@@ -51,7 +66,7 @@ const toDto = (row, role) => {
     promotion_text: row.promotion_text,
     is_featured: row.is_featured,
     is_active: row.is_active,
-    images: row.images || [],
+    images: normalizeImages(row.images),
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
