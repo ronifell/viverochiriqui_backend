@@ -163,8 +163,8 @@ const products = [
   },
 ];
 
-const placeholderImage = (slug, idx) =>
-  `https://images.unsplash.com/photo-1${1500000000000 + idx * 13}?auto=format&fit=crop&w=900&q=70`;
+const placeholderImage = () =>
+  'https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&w=900&q=70';
 
 // Stable, real Unsplash plant photos so the catalog looks polished out of the box.
 const productImages = {
@@ -176,19 +176,19 @@ const productImages = {
   'Areca Palm':                   'https://images.unsplash.com/photo-1602923668104-8f9e03e77e62?auto=format&fit=crop&w=900&q=70',
   'Cactus Bola de Oro':           'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=900&q=70',
   'Golden Barrel Cactus':         'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=900&q=70',
-  'Philodendron Brasil':          'https://images.unsplash.com/photo-1632207171331-93a5e1be9b3a?auto=format&fit=crop&w=900&q=70',
+  'Philodendron Brasil':          'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=900&q=70',
   'Rosal Rojo':                   'https://images.unsplash.com/photo-1496062031456-07b8f162a322?auto=format&fit=crop&w=900&q=70',
   'Red Rose Bush':                'https://images.unsplash.com/photo-1496062031456-07b8f162a322?auto=format&fit=crop&w=900&q=70',
-  'Limonero':                     'https://images.unsplash.com/photo-1591172103328-19a063d2d672?auto=format&fit=crop&w=900&q=70',
-  'Lemon Tree':                   'https://images.unsplash.com/photo-1591172103328-19a063d2d672?auto=format&fit=crop&w=900&q=70',
-  'Ficus Lyrata':                 'https://images.unsplash.com/photo-1597055181449-b3974403e98e?auto=format&fit=crop&w=900&q=70',
-  'Fiddle Leaf Fig':              'https://images.unsplash.com/photo-1597055181449-b3974403e98e?auto=format&fit=crop&w=900&q=70',
-  'Maceta Cerámica Blanca 12cm':  'https://images.unsplash.com/photo-1620127252536-03bdfcf6e4cf?auto=format&fit=crop&w=900&q=70',
-  'White Ceramic Pot 12cm':       'https://images.unsplash.com/photo-1620127252536-03bdfcf6e4cf?auto=format&fit=crop&w=900&q=70',
+  'Limonero':                     'https://images.unsplash.com/photo-1491147334573-44cbb4602074?auto=format&fit=crop&w=900&q=70',
+  'Lemon Tree':                   'https://images.unsplash.com/photo-1491147334573-44cbb4602074?auto=format&fit=crop&w=900&q=70',
+  'Ficus Lyrata':                 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=70',
+  'Fiddle Leaf Fig':              'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=70',
+  'Maceta Cerámica Blanca 12cm':  'https://images.unsplash.com/photo-1459156212016-c812468e2115?auto=format&fit=crop&w=900&q=70',
+  'White Ceramic Pot 12cm':       'https://images.unsplash.com/photo-1459156212016-c812468e2115?auto=format&fit=crop&w=900&q=70',
   'Tierra Orgánica 10kg':         'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=900&q=70',
   'Organic Soil 10kg':            'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=900&q=70',
-  'Bromelia Roja':                'https://images.unsplash.com/photo-1632828222588-b9a59d6a2f72?auto=format&fit=crop&w=900&q=70',
-  'Red Bromeliad':                'https://images.unsplash.com/photo-1632828222588-b9a59d6a2f72?auto=format&fit=crop&w=900&q=70',
+  'Bromelia Roja':                'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=900&q=70',
+  'Red Bromeliad':                'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=900&q=70',
 };
 
 async function run() {
@@ -212,7 +212,6 @@ async function run() {
       catIdBySlug[c.slug] = rows[0].id;
     }
 
-    let imageIdx = 0;
     for (const p of products) {
       const { rows } = await client.query(
         `INSERT INTO products (
@@ -240,7 +239,7 @@ async function run() {
       const url =
         productImages[p.name_es] ||
         productImages[p.name_en] ||
-        placeholderImage(p.cat, imageIdx++);
+        placeholderImage();
 
       await client.query(
         `INSERT INTO product_images (product_id, url, alt_text, sort_order, is_primary)
