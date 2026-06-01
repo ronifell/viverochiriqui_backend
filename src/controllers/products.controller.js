@@ -23,6 +23,9 @@ const productSchema = z.object({
 
 const partialProductSchema = productSchema.partial();
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 /**
  * Builds the public product DTO. Hides wholesale_price unless caller is wholesale or admin.
  */
@@ -96,9 +99,14 @@ const list = async (req, res) => {
   }
 
   if (req.query.category) {
-    filters.push(`(p.category_id = $${i} OR c.slug = $${i})`);
-    values.push(req.query.category);
-    i++;
+    const cat = String(req.query.category);
+    if (UUID_RE.test(cat)) {
+      filters.push(`p.category_id = $${i++}`);
+      values.push(cat);
+    } else {
+      filters.push(`c.slug = $${i++}`);
+      values.push(cat);
+    }
   }
   if (req.query.featured === '1') {
     filters.push(`p.is_featured = TRUE`);
