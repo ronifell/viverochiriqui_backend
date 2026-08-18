@@ -23,10 +23,9 @@ const needsSsl = env.DATABASE_URL
   ? !isLocal(hostFromUrl(env.DATABASE_URL))
   : !isLocal(env.PGHOST);
 
-const sslOption =
-  env.NODE_ENV === 'production' || needsSsl
-    ? { rejectUnauthorized: false }
-    : false;
+// Only force SSL for remote hosts. Local Postgres (even in production)
+// typically has no SSL listener.
+const sslOption = needsSsl ? { rejectUnauthorized: false } : false;
 
 const pool = env.DATABASE_URL
   ? new Pool({
