@@ -30,9 +30,27 @@ app.use(
 app.use(compression());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+const allowedOrigins = new Set(
+  [
+    env.FRONTEND_ORIGIN,
+    'https://viverochiriqui.com',
+    'https://www.viverochiriqui.com',
+    'http://viverochiriqui.com',
+    'http://www.viverochiriqui.com',
+    'http://2.24.70.10',
+  ].filter(Boolean)
+);
+
 app.use(
   cors({
-    origin: env.FRONTEND_ORIGIN === '*' ? true : env.FRONTEND_ORIGIN,
+    origin: (origin, cb) => {
+      // Allow same-origin / non-browser tools (no Origin header)
+      if (!origin || allowedOrigins.has(origin) || env.FRONTEND_ORIGIN === '*') {
+        return cb(null, true);
+      }
+      return cb(null, false);
+    },
     credentials: true,
   })
 );
